@@ -128,15 +128,37 @@
         {{-- 📋 Table --}}
         <div class="mt-6 overflow-x-auto bg-white rounded shadow">
             <table class="min-w-full divide-y divide-gray-200 text-sm">
+
                 <thead class="bg-gray-100 text-left">
                     <tr>
-                        <th class="px-4 py-2">Date</th>
-                        <th class="px-4 py-2">Category</th>
-                        <th class="px-4 py-2">Description</th>
-                        <th class="px-4 py-2">Amount (₦)</th>
-                        <th class="px-4 py-2">Status</th>
+                        <th class="cursor-pointer px-4 py-2" wire:click="sortBy('date')">
+                            Date @if ($sortField === 'date')
+                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                            @endif
+                        </th>
+                        <th class="cursor-pointer px-4 py-2" wire:click="sortBy('category_id')">
+                            Category @if ($sortField === 'category_id')
+                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                            @endif
+                        </th>
+                        <th class="cursor-pointer px-4 py-2" wire:click="sortBy('description')">
+                            Description @if ($sortField === 'description')
+                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                            @endif
+                        </th>
+                        <th class="cursor-pointer px-4 py-2" wire:click="sortBy('amount')">
+                            Amount (₦) @if ($sortField === 'amount')
+                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                            @endif
+                        </th>
+                        <th class="cursor-pointer px-4 py-2" wire:click="sortBy('status')">
+                            Status @if ($sortField === 'status')
+                                {!! $sortDirection === 'asc' ? '↑' : '↓' !!}
+                            @endif
+                        </th>
                     </tr>
                 </thead>
+
                 <tbody class="divide-y divide-gray-200">
                     @forelse ($transactions as $tx)
                         <tr>

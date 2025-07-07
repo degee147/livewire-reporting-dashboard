@@ -20,7 +20,8 @@ class TransactionTable extends Component
     public $dateTo = '';
     public $categories = []; // Empty array means "All"
     public $perPage = 10;
-
+    public string $sortField = 'date';
+    public string $sortDirection = 'desc';
     public $allCategories = [];
     public $totalAmount = 0;
 
@@ -41,37 +42,57 @@ class TransactionTable extends Component
 
     public function getFilteredQuery()
     {
-        $query = Transaction::query()->with('category');
+        // $query = Transaction::query()->with('category');
 
-        if (!auth()->user()->isAdmin()) {
-            // Regular user — only show their own transactions
-            $query->where('user_id', auth()->id());
-        }
+        // if (!auth()->user()->isAdmin()) {
+        //     // Regular user — only show their own transactions
+        //     $query->where('user_id', auth()->id());
+        // }
 
-        if (!empty($this->search)) {
-            $query->where(function ($q) {
-                $q->where('description', 'like', "%{$this->search}%")
-                    ->orWhere('amount', 'like', "%{$this->search}%");
-            });
-        }
+        // if (!empty($this->search)) {
+        //     $query->where(function ($q) {
+        //         $q->where('description', 'like', "%{$this->search}%")
+        //             ->orWhere('amount', 'like', "%{$this->search}%");
+        //     });
+        // }
 
-        if (!empty($this->dateFrom)) {
-            $query->whereDate('date', '>=', $this->dateFrom);
-        }
+        // if (!empty($this->dateFrom)) {
+        //     $query->whereDate('date', '>=', $this->dateFrom);
+        // }
 
-        if (!empty($this->dateTo)) {
-            $query->whereDate('date', '<=', $this->dateTo);
-        }
+        // if (!empty($this->dateTo)) {
+        //     $query->whereDate('date', '<=', $this->dateTo);
+        // }
 
-        // Only filter by categories if specific categories are selected
-        // Empty array means "All categories"
-        if (!empty($this->categories) && is_array($this->categories)) {
-            $query->whereIn('category_id', $this->categories);
-        }
+        // // Only filter by categories if specific categories are selected
+        // // Empty array means "All categories"
+        // if (!empty($this->categories) && is_array($this->categories)) {
+        //     $query->whereIn('category_id', $this->categories);
+        // }
 
-        return $query;
+        // return $query;
+        return Transaction::query()
+            ->with('category')
+            ->when(Auth::user()->isAdmin(), fn($q) => $q, fn($q) => $q->where('user_id', Auth::id()))
+            ->when($this->search, fn($q) =>
+                $q->where(function ($q) {
+                    $q->where('description', 'like', "%{$this->search}%")
+                        ->orWhere('amount', 'like', "%{$this->search}%");
+                }))
+            ->when($this->dateFrom, fn($q) => $q->whereDate('date', '>=', $this->dateFrom))
+            ->when($this->dateTo, fn($q) => $q->whereDate('date', '<=', $this->dateTo))
+            ->when($this->categories, fn($q) => $q->whereIn('category_id', $this->categories))
+            ->orderBy($this->sortField, $this->sortDirection);
     }
-
+    public function sortBy(string $field): void
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
     // Helper method to get selected category names for display
     public function getSelectedCategoryNames()
     {
