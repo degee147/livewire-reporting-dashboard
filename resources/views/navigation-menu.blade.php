@@ -35,6 +35,15 @@
                             {{ __('Users') }}
                         </x-nav-link>
                     @endif
+
+                    @if (session()->has('impersonate'))
+                        <x-nav-link href="{{ route('impersonate.stop') }}"
+                            class="text-red-600 hover:text-red-800 font-semibold">
+                            {{ __('Stop Impersonating') }}
+                        </x-nav-link>
+                    @endif
+
+
                 </div>
 
             </div>
@@ -192,6 +201,13 @@
             @if (Auth::user()->role === 'admin')
                 <x-responsive-nav-link href="{{ route('admin.users') }}" :active="request()->routeIs('admin.users')">
                     {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if (session()->has('impersonate'))
+                <x-responsive-nav-link href="{{ route('impersonate.stop') }}"
+                    class="text-red-600 hover:text-red-800 font-semibold">
+                    {{ __('Stop Impersonating') }}
                 </x-responsive-nav-link>
             @endif
         </div>

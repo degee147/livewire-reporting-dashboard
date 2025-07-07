@@ -28,6 +28,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'active',
         'password',
         'role', // 'admin' or 'user'
     ];
@@ -65,6 +66,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isImpersonating(): bool
+    {
+        return session()->has('impersonate');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
