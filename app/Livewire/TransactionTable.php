@@ -115,7 +115,7 @@ class TransactionTable extends Component
 
             foreach ($transactions as $tx) {
                 fputcsv($handle, [
-                    $tx->date->format('Y-m-d'),
+                    \Carbon\Carbon::parse($tx->date)->format('Y-m-d'),
                     $tx->category->name ?? '-',
                     $tx->description,
                     $tx->amount,
