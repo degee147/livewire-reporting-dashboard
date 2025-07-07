@@ -4,7 +4,9 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Transaction;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.app')]
 class AnalyticsDashboard extends Component
 {
     public string|null $dateFrom = null;
@@ -53,6 +55,9 @@ class AnalyticsDashboard extends Component
             ->groupBy('date')
             ->orderBy('date')
             ->get()
-            ->map(fn($r) => ['date' => $r->date->format('Y-m-d'), 'value' => $r->count]);
+            ->map(fn($r) => [
+                'date' => \Carbon\Carbon::parse($r->date)->format('Y-m-d'),
+                'value' => $r->count,
+            ]);
     }
 }

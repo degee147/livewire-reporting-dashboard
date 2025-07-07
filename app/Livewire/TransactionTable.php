@@ -6,8 +6,10 @@ use Livewire\Component;
 use App\Models\Category;
 use App\Models\Transaction;
 use Livewire\WithPagination;
+use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
+#[Layout('layouts.app')]
 class TransactionTable extends Component
 {
     use WithPagination;
